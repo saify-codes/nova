@@ -21,32 +21,40 @@
           <h1
             class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white"
           >
-            Create your account
+            Forgot Password
           </h1>
+
           <form
             class="space-y-4 md:space-y-6"
             @submit.prevent="handleSubmit"
             novalidate
           >
-            <div>
-              <label
-                for="name"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >Name</label
+            <!-- Reset link alert -->
+            <div
+              class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800"
+              role="alert"
+              v-show="showAlert"
+            >
+              <svg
+                class="flex-shrink-0 inline w-4 h-4 me-3"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-              <input
-                type="text"
-                name="name"
-                id="name"
-                class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="john doe"
-                required
-                v-model="form.data.name"
-              />
-              <p class="mt-2 text-sm text-red-600 font-medium">
-                {{ form.errors?.name }}
-              </p>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                />
+              </svg>
+
+              <span class="sr-only">Info</span>
+              <div>
+                <span class="font-medium">Password reset link sent</span>
+              </div>
             </div>
+            <!-- Reset link alert -->
+
             <div>
               <label
                 for="email"
@@ -66,36 +74,15 @@
                 {{ form.errors?.email }}
               </p>
             </div>
-            <div>
-              <label
-                for="password"
-                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >Password</label
-              >
-              <input
-                type="password"
-                name="password"
-                id="password"
-                placeholder="••••••••"
-                class="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                required
-                v-model.trim="form.data.password"
-              />
-              <p class="mt-2 text-sm text-red-600 font-medium">
-                {{ form.errors?.password }}
-              </p>
-            </div>
-
             <Button
               type="submit"
               className="w-full text-white bg-primary-600 disabled:!bg-gray-500 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               :loading="processing"
             >
-              Create account
+              Send password reset link
             </Button>
-
             <p class="text-sm font-light text-gray-500 dark:text-gray-400">
-              Don’t have an account yet?
+              back to
               <router-link
                 :to="{ name: 'sign-in' }"
                 class="font-medium text-primary-600 hover:underline dark:text-primary-500"
@@ -112,15 +99,14 @@
 <script setup>
 import { reactive, ref, watch } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { toast, Message, FireStore } from "@/utils";
-import router from "@/router";
+import { toast } from "@/utils";
 import Button from "@/components/button.vue";
 
 const auth = useAuthStore();
-const db = new FireStore();
 const processing = ref(false);
+const showAlert = ref(false);
 const form = reactive({
-  data: { name: "", email: "", password: "" },
+  data: { email: "" },
   errors: {},
   isValid: false,
   submitted: false,
@@ -131,29 +117,13 @@ function handleSubmit() {
 
   if (!validateForm()) return;
 
-  const { email, password } = form.data;
+  const { email } = form.data;
   showLoader(
     auth
-      .signup(email, password)
-      .then(({user}) => {
-
-        Message.flash("account-signup", "account created");
-        toast("Your account was created", "success");
-        router.push({ name: "dashboard" });
-
-        // Add record to users collection
-        const userRecord = {
-          name: form.data.email,
-          email: form.data.name,
-          avatar: user.photoURL,
-          verified: user.emailVerified,
-          role: 'USER',
-          createdAt: new Date(user.metadata.creationTime)
-        }
-        
-        db.setRecord("users", user.uid, userRecord)
-        auth.createAuthSession(user.accessToken, userRecord, 'authenticated')
-        
+      .resetPassword(email)
+      .then(() => {
+        toast("Email send successful", "success");
+        showAlert.value = true;
       })
       .catch((error) => {
         toast(error, "danger");
@@ -167,18 +137,6 @@ function validateEmail(email) {
 
 function validateForm() {
   form.errors = {};
-
-  if (form.data.name == "") {
-    form.errors.name = "name field is required";
-  } else if (form.data.name.length < 3) {
-    form.errors.name = "name must be 3 characters";
-  }
-
-  if (form.data.password == "") {
-    form.errors.password = "password field is required";
-  } else if (form.data.password.length < 8) {
-    form.errors.password = "password must be 8 characters";
-  }
 
   if (form.data.email == "") {
     form.errors.email = "email field is required";
