@@ -40,7 +40,15 @@ export const useAuthStore = defineStore("auth", () => {
     return authSession.token;
   }
 
-  function createAuthSession(token, user, status = "unauthenticated") {
+  function getSessionStatus() {
+    return authSession.status;
+  }
+
+  function createAuthSession(
+    token = null,
+    user = null,
+    status = "unauthenticated"
+  ) {
     authSession.token = token;
     authSession.user = user;
     authSession.status = status;
@@ -53,21 +61,15 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   function initAuthSession() {
-    console.log("======> SESSION CHANGED <======");
     onAuthStateChanged(auth, async (userCredential) => {
       if (userCredential) {
         const user = await db.getRecordById("users", userCredential.uid);
         createAuthSession(userCredential.accessToken, user, "authenticated");
+      } else {
+        createAuthSession();
+        setTimeout(() => {
+        }, 5000);
       }
-
-      // if (!userCredential && authSession.status === "authenticated") {
-      //   destroyAuthSession();
-      // }
-
-      // if (userCredential && authSession.status !== "authenticated") {
-      //   const user = await db.getRecordById("users", userCredential.uid);
-      //   createAuthSession(userCredential.accessToken, user, "authenticated");
-      // }
     });
   }
 
@@ -84,7 +86,8 @@ export const useAuthStore = defineStore("auth", () => {
         password
       );
 
-      createAuthSession(userCredential);
+      const user = await db.getRecordById("users", userCredential.user.uid);
+      createAuthSession(userCredential.accessToken, user, "authenticated");
 
       return "user logged in";
     } catch (error) {
@@ -148,6 +151,7 @@ export const useAuthStore = defineStore("auth", () => {
     authenticated,
     getUser,
     getToken,
+    getSessionStatus,
     signup,
     signin,
     signout,

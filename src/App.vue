@@ -1,22 +1,21 @@
 <template>
-  Loading...
+  <FullPageLoader/>
   <router-view />
 </template>
 
+<script setup>
+import { useAuthStore } from "./stores/auth";
+import FullPageLoader from "@/components/full-page-loaders/loader-1.vue";
+
+// Initialize auth session
+useAuthStore().initAuthSession();
+</script>
+
 <script>
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { firebaseConfig } from "@/config/firebase";
-import { useAuthStore } from "./stores/auth";
-
-export default {
-  setup(){
-    const {initAuthSession} = useAuthStore()
-    initAuthSession()
-  }
-}
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
-export const analytics = getAnalytics(app);
 </script>
+
