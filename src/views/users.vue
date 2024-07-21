@@ -226,6 +226,10 @@ function filterUser(phrase) {
 function deleteUser(userId) {
   const filterUsers = data.value.filter((user) => user.id !== userId);
   users.value = data.value = filterUsers;
+
+  if (search.value != "") {
+    filterUser(search.value)
+  }
 }
 
 async function fetchUsers() {
