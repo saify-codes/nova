@@ -1,7 +1,7 @@
 <template>
   <Vue3Lottie
     v-show="show"
-    class="bg-white fixed z-[999] inset-0 grid place-content-center"
+    class="!bg-white fixed z-[999] inset-0 grid place-content-center"
     :animationData="CatAnimation"
   />
 </template>
