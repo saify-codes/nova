@@ -67,8 +67,7 @@ export const useAuthStore = defineStore("auth", () => {
         createAuthSession(userCredential.accessToken, user, "authenticated");
       } else {
         createAuthSession();
-        setTimeout(() => {
-        }, 5000);
+        setTimeout(() => {}, 5000);
       }
     });
   }
@@ -148,6 +147,7 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   return {
+    authSession,
     authenticated,
     getUser,
     getToken,

@@ -2,7 +2,7 @@ export function toast(text, type, duration = 3000) {
   const options = {
     text,
     duration,
-    style: {},
+    style: {borderRadius: '0.5rem'},
   };
 
   switch (type) {

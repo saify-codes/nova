@@ -28,21 +28,5 @@ watch(auth.getSessionStatus, (status) => {
 
 });
 
-
-// watch(() => auth.getSessionStatus(), (status) => {
-
-// show.value = status === 'loading'
-// clearTimeout(timeoutId);
-
-// if (status === 'loading') {
-//   timeoutId = setTimeout(() => {
-//     if (auth.getSessionStatus() === 'loading') {
-//       show.value = true;
-//     }
-//   }, 3000);
-// } else {
-//   show.value = false;
-// }
-// });
 </script>
   

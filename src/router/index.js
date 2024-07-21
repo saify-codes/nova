@@ -6,6 +6,7 @@ import SignIn from "@/views/sign-in.vue";
 import SignUp from "@/views/sign-up.vue";
 import ForgotPassword from "@/views/forgot-password.vue";
 import Setting from "@/views/setting.vue";
+import Users from "@/views/users.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,24 @@ const router = createRouter({
       path: "/",
       alias: "/dashboard",
       name: "dashboard",
+      component: Dashboard,
+      meta: {
+        protected: true,
+      },
+    },
+    {
+      path: "/users",
+      alias: "/users",
+      name: "users",
+      component: Users,
+      meta: {
+        protected: true,
+      },
+    },
+    {
+      path: "/ai",
+      alias: "/ai",
+      name: "ai",
       component: Dashboard,
       meta: {
         protected: true,
