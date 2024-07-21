@@ -1,5 +1,8 @@
 <template>
   <Layout>
+
+    <Breadcrumb path="users"/>
+
     <div class="relative overflow-x-auto p-1">
       <div
         class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900"
@@ -204,6 +207,7 @@ import { onMounted, ref, watch } from "vue";
 import { FireStore } from "@/utils";
 import Layout from "@/layout/admin.vue";
 import Avatar from "@/components/avatar.vue";
+import Breadcrumb from "@/components/breadcrumb.vue"
 
 const data = ref([]);
 const users = ref([]);
@@ -211,10 +215,10 @@ const search = ref("");
 const loading = ref(true);
 const db = new FireStore();
 
-function filterUser(userName) {
-  const name = userName.trim();
+function filterUser(phrase) {
+  const nameOrEmail = phrase.trim();
   const filterUsers = data.value.filter(
-    (user) => user.name.search(name) !== -1
+    (user) => user.name.search(nameOrEmail) !== -1 || user.email.search(nameOrEmail) !== -1
   );
   users.value = filterUsers;
 }
@@ -228,7 +232,7 @@ async function fetchUsers() {
   const records = await db.getRecords("users");
   data.value = records;
   users.value = records;
-  loading.value=false
+  loading.value = false;
 }
 
 onMounted(() => {
@@ -238,5 +242,4 @@ onMounted(() => {
 watch(search, (value) => {
   filterUser(value);
 });
-
 </script>
