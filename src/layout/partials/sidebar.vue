@@ -75,7 +75,6 @@
       </ul>
     </div>
   </aside>
-  {{ path }}
 </template>
 
 <script setup>
@@ -84,6 +83,4 @@ import { computed } from "vue";
 
 const route = useRoute();
 const path = computed(() => route.path);
-
-console.log(path.value);
 </script>
