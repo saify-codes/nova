@@ -27,7 +27,6 @@ export const useAuthStore = defineStore("auth", () => {
     return new Promise((resolve) => {
       onAuthStateChanged(auth, (userCredential) => {
         resolve(!!userCredential);
-        setTimeout(() => {}, 3000);
       });
     });
   }
@@ -67,7 +66,6 @@ export const useAuthStore = defineStore("auth", () => {
         createAuthSession(userCredential.accessToken, user, "authenticated");
       } else {
         createAuthSession();
-        setTimeout(() => {}, 5000);
       }
     });
   }

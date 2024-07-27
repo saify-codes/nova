@@ -36,6 +36,7 @@
           </a>
         </div>
         <div class="flex items-center">
+          <div class="credit">$0.00</div>
           <div class="flex items-center ms-3">
             <div>
               <button

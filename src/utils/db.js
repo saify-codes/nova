@@ -20,8 +20,7 @@ export class FireStore {
 
   async setRecord(_collection, uid, record) {
     try {
-      const docRef = doc(this.db, _collection, uid);
-      await setDoc(docRef, record);
+      await setDoc(doc(this.db, _collection, uid), record);
       this.lastInsertedId = uid;
     } catch (e) {
       console.error("Error adding document: ", e);
@@ -30,8 +29,8 @@ export class FireStore {
 
   async insertRecord(_collection, record) {
     try {
-      const docRef = await addDoc(collection(this.db, _collection), record);
-      this.lastInsertedId = docRef.id;
+      const record = await addDoc(collection(this.db, _collection), record);
+      this.lastInsertedId = record.id;
     } catch (e) {
       console.error("Error adding document: ", e);
     }
@@ -52,11 +51,10 @@ export class FireStore {
 
   async getRecordById(_collection, recordId) {
     try {
-      const record = doc(this.db, _collection, recordId);
-      const snapshot = await getDoc(record);
+      const record = await getDoc(doc(this.db, _collection, recordId));
 
-      if (snapshot.exists()) {
-        return { id: snapshot.id, ...snapshot.data() };
+      if (record.exists()) {
+        return { id: record.id, ...record.data() };
       } else {
         return null;
       }
@@ -67,8 +65,7 @@ export class FireStore {
 
   async updateRecord(_collection, recordId, newRecord) {
     try {
-      const doc = doc(db, _collection, recordId);
-      await updateDoc(doc, newRecord);
+      await updateDoc(doc(db, _collection, recordId), newRecord);
     } catch (e) {
       console.error("Error updating document: ", e);
     }

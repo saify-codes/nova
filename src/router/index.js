@@ -2,11 +2,13 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { Message } from "@/utils";
 import Dashboard from "@/views/dashboard.vue";
+import Tools from "@/views/tools.vue";
 import SignIn from "@/views/sign-in.vue";
 import SignUp from "@/views/sign-up.vue";
 import ForgotPassword from "@/views/forgot-password.vue";
 import Setting from "@/views/setting.vue";
 import Users from "@/views/users.vue";
+import NotFound from "@/views/404.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,7 +24,6 @@ const router = createRouter({
     },
     {
       path: "/users",
-      alias: "/users",
       name: "users",
       component: Users,
       meta: {
@@ -30,10 +31,17 @@ const router = createRouter({
       },
     },
     {
-      path: "/ai",
-      alias: "/ai",
-      name: "ai",
-      component: Dashboard,
+      path: "/community",
+      name: "community",
+      component: Users,
+      meta: {
+        protected: true,
+      },
+    },
+    {
+      path: "/tools",
+      name: "tools",
+      component: Tools,
       meta: {
         protected: true,
       },
@@ -69,6 +77,11 @@ const router = createRouter({
       meta: {
         redirectIfAuth: true,
       },
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "404",
+      component: NotFound,
     },
   ],
 });
